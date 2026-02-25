@@ -1,7 +1,6 @@
 'use strict';
 
 const { expect } = require('chai');
-const sinon = require('sinon');
 const net = require('net');
 const { scanPort, scanHost, scanRange, getOpenPorts, COMMON_PORTS, DEFAULT_TIMEOUT } = require('../src/scanner');
 

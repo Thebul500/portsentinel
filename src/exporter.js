@@ -27,7 +27,7 @@ function toCSV(scanResult) {
   const rows = scanResult.ports.map((p) => {
     const service = p.service || '';
     const banner = p.banner ? `"${p.banner.replace(/"/g, '""')}"` : '';
-    const latency = p.latency != null ? p.latency : '';
+    const latency = p.latency !== null && p.latency !== undefined ? p.latency : '';
     return `${scanResult.host},${p.port},${p.state},${service},${banner},${latency},${scanResult.timestamp}`;
   });
 

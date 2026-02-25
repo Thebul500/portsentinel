@@ -1,0 +1,25 @@
+{
+  "env": {
+    "node": true,
+    "es2020": true,
+    "mocha": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "script"
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "rules": {
+    "semi": ["error", "always"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-console": "off",
+    "strict": ["error", "global"],
+    "eqeqeq": ["error", "always"],
+    "no-var": "error",
+    "prefer-const": "error"
+  }
+}
