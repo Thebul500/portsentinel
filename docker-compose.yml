@@ -1,0 +1,12 @@
+services:
+  portsentinel:
+    build: .
+    container_name: portsentinel
+    network_mode: host
+    volumes:
+      - portsentinel-data:/data
+    entrypoint: ["node", "bin/portsentinel.js"]
+    command: ["scan", "127.0.0.1", "-r", "1-1024", "-d", "/data/portsentinel.db"]
+
+volumes:
+  portsentinel-data:
