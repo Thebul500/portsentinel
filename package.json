@@ -1,0 +1,34 @@
+{
+  "name": "portsentinel",
+  "version": "1.0.0",
+  "description": "Real-time port scanner and service fingerprinter with change detection",
+  "main": "src/index.js",
+  "bin": {
+    "portsentinel": "./bin/portsentinel.js"
+  },
+  "scripts": {
+    "test": "mocha 'test/**/*.test.js' --timeout 10000",
+    "test:coverage": "nyc mocha 'test/**/*.test.js' --timeout 10000",
+    "lint": "eslint src/ test/",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "port-scanner",
+    "network",
+    "security",
+    "monitoring",
+    "service-detection"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.4.0",
+    "eslint": "^8.56.0",
+    "mocha": "^10.7.0",
+    "nyc": "^17.0.0",
+    "sinon": "^17.0.0"
+  }
+}
