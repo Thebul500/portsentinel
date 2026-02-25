@@ -110,7 +110,7 @@ function printResults(result) {
 
   for (const p of open) {
     const service = p.service ? ` (${p.service})` : '';
-    const latency = p.latency != null ? ` [${p.latency}ms]` : '';
+    const latency = p.latency !== null && p.latency !== undefined ? ` [${p.latency}ms]` : '';
     console.log(`  ${p.port}/tcp  OPEN${service}${latency}`);
   }
 }
