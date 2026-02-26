@@ -1,0 +1,183 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:portsentinel-sbom-2026-02-26",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-02-26T00:00:00Z",
+    "tools": [
+      {
+        "name": "manual-generation",
+        "version": "1.0.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "portsentinel",
+      "version": "1.0.0",
+      "description": "Real-time port scanner and service fingerprinter with change detection",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/portsentinel@1.0.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "better-sqlite3",
+      "version": "11.10.0",
+      "purl": "pkg:npm/better-sqlite3@11.10.0",
+      "scope": "required",
+      "description": "The fastest and simplest library for SQLite3 in Node.js",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "commander",
+      "version": "12.1.0",
+      "purl": "pkg:npm/commander@12.1.0",
+      "scope": "required",
+      "description": "The complete solution for node.js command-line programs",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "chai",
+      "version": "4.5.0",
+      "purl": "pkg:npm/chai@4.5.0",
+      "scope": "optional",
+      "description": "BDD/TDD assertion library for node.js and the browser",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:development",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "eslint",
+      "version": "8.57.1",
+      "purl": "pkg:npm/eslint@8.57.1",
+      "scope": "optional",
+      "description": "An AST-based pattern checker for JavaScript",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:development",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "mocha",
+      "version": "10.8.2",
+      "purl": "pkg:npm/mocha@10.8.2",
+      "scope": "optional",
+      "description": "Simple, flexible, fun test framework",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:development",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "nyc",
+      "version": "17.1.0",
+      "purl": "pkg:npm/nyc@17.1.0",
+      "scope": "optional",
+      "description": "The Istanbul command line interface",
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:development",
+          "value": "true"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "sinon",
+      "version": "17.0.1",
+      "purl": "pkg:npm/sinon@17.0.1",
+      "scope": "optional",
+      "description": "JavaScript test spies, stubs and mocks",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:development",
+          "value": "true"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:npm/portsentinel@1.0.0",
+      "dependsOn": [
+        "pkg:npm/better-sqlite3@11.10.0",
+        "pkg:npm/commander@12.1.0"
+      ]
+    },
+    {
+      "ref": "pkg:npm/better-sqlite3@11.10.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:npm/commander@12.1.0",
+      "dependsOn": []
+    }
+  ]
+}
