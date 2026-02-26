@@ -1,6 +1,34 @@
 # PortSentinel
 
+[![CI](https://github.com/your-org/portsentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/portsentinel/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
+
 Real-time port scanner and service fingerprinter with change detection. Monitors network hosts, detects new open ports, identifies running services, and alerts on changes. Stores scan history in SQLite with JSON/CSV export.
+
+## Quick Start
+
+```bash
+git clone https://github.com/your-org/portsentinel.git
+cd portsentinel
+npm install
+
+# Scan a host with default ports
+node bin/portsentinel.js scan 192.168.1.1
+
+# Scan ports 1-1024 with service fingerprinting
+node bin/portsentinel.js scan 192.168.1.1 -r 1-1024 -f
+
+# Save results to database, detect changes on next run
+node bin/portsentinel.js scan 192.168.1.1 -r 1-1024 -d scans.db
+```
+
+Or with Docker:
+
+```bash
+docker compose build
+docker compose run --rm portsentinel scan 192.168.1.1 -r 1-1024 -f
+```
 
 ## Features
 
@@ -42,7 +70,7 @@ docker compose build
 ### Scan a host (default common ports)
 
 ```bash
-node bin/portsentinel.js scan 192.168.1.1
+portsentinel scan 192.168.1.1
 ```
 
 ### Scan a port range
@@ -160,6 +188,23 @@ These ports trigger `CRITICAL` severity alerts when newly opened:
 
 Ports are scanned in batches of 100 concurrent connections by default. This can be configured programmatically via the `concurrency` option.
 
+### Service Fingerprinting
+
+The fingerprinter identifies services using a two-tier approach:
+
+1. **Banner matching** (high confidence) — connects to open ports, sends protocol-specific probes (HTTP `HEAD`, Redis `PING`), and matches responses against known patterns
+2. **Port-based lookup** (low confidence) — falls back to well-known port assignments when no banner is received
+
+Recognized services: SSH, FTP, SMTP, HTTP, POP3, IMAP, MySQL, PostgreSQL, Redis, MongoDB, VNC, RDP, SMB, MSSQL, Oracle, and more.
+
+### Alert Severity Levels
+
+| Severity | Trigger |
+|---|---|
+| `CRITICAL` | High-risk port newly opened (FTP, Telnet, RDP, SMB, VNC, etc.) |
+| `WARNING` | Any new port opened or service changed |
+| `INFO` | Ports closed or no significant changes |
+
 ## Architecture
 
 ```
@@ -179,6 +224,30 @@ portsentinel/
 ├── docker-compose.yml     # Docker Compose with host networking
 └── .github/workflows/
     └── ci.yml             # CI: lint, test, coverage, security audit
+```
+
+### Pipeline
+
+```
+Host/Ports (CLI input)
+        │
+        ▼
+   ┌─────────┐      ┌───────────────┐
+   │ Scanner  │─────▶│ Fingerprinter │
+   │ (TCP)    │      │ (banners)     │
+   └─────────┘      └───────────────┘
+        │                   │
+        ▼                   ▼
+   ┌──────────┐      ┌──────────┐
+   │ Database │      │ Exporter │
+   │ (SQLite) │      │ (JSON/   │
+   └──────────┘      │  CSV)    │
+        │            └──────────┘
+        ▼
+   ┌──────────┐      ┌────────┐
+   │ Detector │─────▶│ Alerts │
+   │ (diff)   │      │ (severity)│
+   └──────────┘      └────────┘
 ```
 
 ### Module Overview
