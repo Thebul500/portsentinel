@@ -23,19 +23,56 @@ program
   .option('-o, --output <file>', 'Write output to file')
   .option('-f, --fingerprint', 'Fingerprint open ports')
   .option('-d, --db <path>', 'SQLite database path')
+  .option('-c, --concurrency <n>', 'Max concurrent connections', '100')
+  .option('--top-ports <n>', 'Scan top N most common ports')
   .action(async (host, opts) => {
     try {
       const timeout = parseInt(opts.timeout, 10);
+      if (isNaN(timeout) || timeout <= 0) {
+        console.error('Error: timeout must be a positive number');
+        process.exit(1);
+      }
+
+      const concurrency = parseInt(opts.concurrency, 10);
+      if (isNaN(concurrency) || concurrency <= 0 || concurrency > 10000) {
+        console.error('Error: concurrency must be between 1 and 10000');
+        process.exit(1);
+      }
+
       let result;
 
       if (opts.range) {
-        const [start, end] = opts.range.split('-').map(Number);
-        result = await scanner.scanRange(host, start, end, { timeout });
+        const parts = opts.range.split('-');
+        if (parts.length !== 2) {
+          console.error('Error: range must be in format START-END (e.g., 1-1024)');
+          process.exit(1);
+        }
+        const [start, end] = parts.map(Number);
+        if (isNaN(start) || isNaN(end) || !Number.isInteger(start) || !Number.isInteger(end)) {
+          console.error('Error: range must contain valid integers (e.g., 1-1024)');
+          process.exit(1);
+        }
+        result = await scanner.scanRange(host, start, end, { timeout, concurrency });
       } else if (opts.ports) {
-        const ports = opts.ports.split(',').map(Number);
-        result = await scanner.scanHost(host, ports, { timeout });
+        const ports = opts.ports.split(',').map((s) => {
+          const n = Number(s.trim());
+          if (isNaN(n) || !Number.isInteger(n) || n < 1 || n > 65535) {
+            console.error(`Error: invalid port "${s.trim()}" — must be an integer between 1 and 65535`);
+            process.exit(1);
+          }
+          return n;
+        });
+        result = await scanner.scanHost(host, ports, { timeout, concurrency });
+      } else if (opts.topPorts) {
+        const n = parseInt(opts.topPorts, 10);
+        if (isNaN(n) || n < 1) {
+          console.error('Error: --top-ports must be a positive integer');
+          process.exit(1);
+        }
+        const ports = scanner.COMMON_PORTS.slice(0, Math.min(n, scanner.COMMON_PORTS.length));
+        result = await scanner.scanHost(host, ports, { timeout, concurrency });
       } else {
-        result = await scanner.scanHost(host, undefined, { timeout });
+        result = await scanner.scanHost(host, undefined, { timeout, concurrency });
       }
 
       if (opts.fingerprint) {
@@ -100,19 +137,48 @@ program
 
 function printResults(result) {
   const open = scanner.getOpenPorts(result);
-  console.log(`\nScan results for ${result.host} (${result.timestamp})`);
-  console.log(`${open.length} open ports found:\n`);
+  const closed = result.ports.length - open.length;
+  const elapsed = open.reduce((max, p) => Math.max(max, p.latency || 0), 0);
+
+  console.log('');
+  console.log(`PortSentinel scan report for ${result.host}`);
+  console.log(`Scan started at: ${result.timestamp}`);
+  console.log(`${result.ports.length} ports scanned — ${open.length} open, ${closed} closed`);
+  console.log('');
 
   if (open.length === 0) {
     console.log('  No open ports detected.');
+    console.log('');
     return;
   }
 
+  // Table header
+  const portW = 10;
+  const stateW = 8;
+  const serviceW = 16;
+  const latencyW = 10;
+  const bannerW = 40;
+
+  console.log(
+    '  ' +
+    'PORT'.padEnd(portW) +
+    'STATE'.padEnd(stateW) +
+    'SERVICE'.padEnd(serviceW) +
+    'LATENCY'.padEnd(latencyW) +
+    'BANNER'
+  );
+  console.log('  ' + '-'.repeat(portW + stateW + serviceW + latencyW + bannerW));
+
   for (const p of open) {
-    const service = p.service ? ` (${p.service})` : '';
-    const latency = p.latency !== null && p.latency !== undefined ? ` [${p.latency}ms]` : '';
-    console.log(`  ${p.port}/tcp  OPEN${service}${latency}`);
+    const port = `${p.port}/tcp`.padEnd(portW);
+    const state = 'open'.padEnd(stateW);
+    const service = (p.service || '').padEnd(serviceW);
+    const latency = (p.latency !== null && p.latency !== undefined ? `${p.latency}ms` : '').padEnd(latencyW);
+    const banner = p.banner ? p.banner.replace(/[\r\n]+/g, ' ').substring(0, bannerW) : '';
+    console.log(`  ${port}${state}${service}${latency}${banner}`);
   }
+
+  console.log('');
 }
 
 program.parse();

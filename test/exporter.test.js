@@ -77,6 +77,18 @@ describe('Exporter', () => {
       expect(lines).to.have.length(2);
     });
 
+    it('should escape newlines in banners', () => {
+      const scan = {
+        host: '10.0.0.1',
+        timestamp: '2026-01-01T00:00:00.000Z',
+        ports: [{ port: 22, state: 'open', banner: 'SSH-2.0\r\nProtocol' }],
+      };
+      const csv = toCSV(scan);
+      const lines = csv.split('\n');
+      expect(lines).to.have.length(2); // header + 1 row, no extra line from banner
+      expect(csv).to.include('SSH-2.0 Protocol');
+    });
+
     it('should throw on invalid input', () => {
       expect(() => toCSV(null)).to.throw('Invalid scan result');
       expect(() => toCSV({})).to.throw('Invalid scan result');
