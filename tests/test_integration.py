@@ -12,7 +12,6 @@ import json
 import os
 import socket
 import subprocess
-import tempfile
 import time
 
 import pytest
@@ -277,7 +276,7 @@ class TestDatabaseIntegration:
         run_cli("scan", "127.0.0.1", "-p", "22,80", "-d", tmp_db, "--json")
         stdout, _, rc = run_cli("history", "127.0.0.1", "-d", tmp_db)
         assert rc == 0
-        lines = [l.strip() for l in stdout.strip().split("\n") if l.strip()]
+        lines = [line.strip() for line in stdout.strip().split("\n") if line.strip()]
         assert len(lines) >= 2  # at least 2 history entries
 
     def test_history_empty_host(self, tmp_db):
@@ -524,7 +523,7 @@ class TestEndToEnd:
         # Step 3: Check history shows both scans
         stdout3, _, rc3 = run_cli("history", "127.0.0.1", "-d", tmp_db)
         assert rc3 == 0
-        lines = [l.strip() for l in stdout3.strip().split("\n") if l.strip()]
+        lines = [line.strip() for line in stdout3.strip().split("\n") if line.strip()]
         assert len(lines) >= 2
 
     def test_scan_remote_and_localhost(self, tmp_db):

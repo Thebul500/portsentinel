@@ -138,8 +138,6 @@ program
 function printResults(result) {
   const open = scanner.getOpenPorts(result);
   const closed = result.ports.length - open.length;
-  const elapsed = open.reduce((max, p) => Math.max(max, p.latency || 0), 0);
-
   console.log('');
   console.log(`PortSentinel scan report for ${result.host}`);
   console.log(`Scan started at: ${result.timestamp}`);
