@@ -1,6 +1,6 @@
 # PortSentinel
 
-[![CI](https://github.com/your-org/portsentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/portsentinel/actions/workflows/ci.yml)
+[![CI](https://github.com/Thebul500/portsentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/Thebul500/portsentinel/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
 
@@ -9,7 +9,7 @@ Real-time port scanner and service fingerprinter with change detection. Monitors
 ## Quick Start
 
 ```bash
-git clone https://github.com/your-org/portsentinel.git
+git clone https://github.com/Thebul500/portsentinel.git
 cd portsentinel
 npm install
 
@@ -45,7 +45,7 @@ docker compose run --rm portsentinel scan 192.168.1.1 -r 1-1024 -f
 ### From source
 
 ```bash
-git clone https://github.com/your-org/portsentinel.git
+git clone https://github.com/Thebul500/portsentinel.git
 cd portsentinel
 npm install
 ```

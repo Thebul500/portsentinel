@@ -15,7 +15,9 @@ If you discover a security vulnerability in PortSentinel, please report it respo
 
 **Do not open a public GitHub issue for security vulnerabilities.**
 
-Instead, email your report to **security@portsentinel.dev** with:
+Please use GitHub Security Advisories to report vulnerabilities: https://github.com/Thebul500/portsentinel/security/advisories
+
+Include:
 
 - A description of the vulnerability
 - Steps to reproduce the issue
